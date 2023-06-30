@@ -1,0 +1,58 @@
+# Build and Deploy process of the FrontEnd System
+
+name: dispatcher-$(date:yyyyMMdd)$(rev:.r)
+
+trigger:
+  branches:
+    include:
+      - develop
+  paths:
+    include:
+      - /dispatcher/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: "Build"
+    jobs:
+      - job: Build
+        displayName: "Build"
+        timeoutInMinutes: 0
+        workspace:
+          clean: all
+        steps:
+          - task: Maven@4
+            inputs:
+              goals: 'clean package'
+              options: '-e'
+              mavenPOMFile: "$(Build.SourcesDirectory)/dispatcher/pom.xml"
+          - task: CopyFiles@2
+            displayName: 'Copy files to target folder'
+            inputs:
+              SourceFolder: '$(Build.SourcesDirectory)/dispatcher/'
+              Contents: '**/*.zip'
+              TargetFolder: '$(Build.ArtifactStagingDirectory)'
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish artifact'
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'dispatcher'
+              publishLocation: 'Container'
+
+  - stage: "Sync"
+    jobs:
+    - job: Sync_Job
+      displayName: 'Sync repos'
+      workspace:
+        clean: all
+      steps:
+      - task: Bash@3
+        inputs:
+          targetType: 'filePath'
+          filePath: pipelines/script.sh
+        env:
+          GITHUBPAT: $(PAT)
+          ADOSOURCESDIR: $(Build.SourcesDirectory)
+          ADOCREDENTIALS: $(System.AccessToken)
+          BRANCH: $(Build.SourceBranchName)

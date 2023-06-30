@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Created-By: Apache Jackrabbit FileVault - Package Maven Plugin 1.1.6
+Build-Jdk-Spec: 17
+Implementation-Title: My Site - UI apps
+Implementation-Version: 1.0.0-SNAPSHOT
+Content-Package-Type: application
+Content-Package-Id: com.mysite:mysite.ui.apps:1.0.0-SNAPSHOT
+Content-Package-Description: UI apps package for My Site
+Content-Package-Roots: /apps/mysite/clientlibs,/apps/mysite/components,/
+ apps/mysite/i18n
+

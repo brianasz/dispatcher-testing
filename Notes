@@ -1,0 +1,45 @@
+Workflow:
+1. DEV and TEST dispatcher deployments can continue as usual
+2. When code is merged into DEVELOP, we can trigger the stage pipeline to:
+    3. Build dispatcher code as described here: https://experienceleague.adobe.com/docs/experience-manager-cloud-manager/content/getting-started/dispatcher-configurations.html?lang=en
+    This is the way Cloud Manager will run the dispatcher deployment
+    4. Instead of deploying the code to our STAGE environment, we will syncronize our Azure Devops Repository 
+        with CM Repository, by pushing our ADO/develop branch to CloudManager/develop branch. 
+    5. The push to CloudManager/develop branch will trigger a build and deploy process of dispatcher to STAGE environment
+
+Concerns and Questions: 
+1. How to make sure only dispatcher is deployed? 
+    2. Dispatcher will have its own pom file and we would build from that one and solve our issue BUT, it looks like cloud Manager expects to read the pom file located in the root of the repository not the one under distpacher/pom.xml
+    3. Could we maybe change this with environment variables? To check with David. 
+    4. If that is not possible, How can we manage two versions of the pom file without causing Git issues?
+    5. How are versions managed in cloud manager? There is an environment variable for that: ARTIFACTS_VERSION
+    6. The docs talk about Pipeline Variables configured through the Cloud Manager API or Cloud Manager CLI, but I haven't
+        seen this before. To check with David. "variables are made available inside the build environment as an environment variable which can then be referenced from inside the pom.xml file or other build scripts"
+2. I'm concerned about pushing commits directly to CM repository and that somehow creating conflicts with the syncronization process between ADO repo and CM repo. 
+    1. Maybe one way to solve this, is never pushing commits directly to our build branch (DEVELOP or MAIN), and always pushing to feature branches as our sync process is really only the build branch.
+
+Notes from meeting:
+maven profiles in pom.xml
+change build process of CM
+environment variables? 
+what about tickets that require both code and dispatcher updates?
+What if we make a new repo that only contains dispatcher configurations?
+    dispatcher folder on our current repo
+
+
+f5-aem-cloud-manager
+
+
+
+************************** To check:
+marketing wants to use:
+lilac CDN (F5 CDN)
+
+running our own infra of AEM (nginx)
+who gives support to nginx? would we do it? or someone else?
+
+F5:
+app security
+app availability
+AEM in the cloud with distributed cloud?
+check with Ilia (of course!!!)
