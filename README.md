@@ -126,3 +126,5 @@ The project comes with the auto-public repository configured. To setup the repos
     http://helpx.adobe.com/experience-manager/kb/SetUpTheAdobeMavenRepository.html
 
 ### Pushed to ado repo
+
+### Second push to ADO repo after creating a new develop branch in github repo.
